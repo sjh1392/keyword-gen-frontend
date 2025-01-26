@@ -16,14 +16,23 @@ export default {
     const sortKey = ref('keyword'); // Default sort key
     const sortOrder = ref('asc'); // Default sort order
 
-    const fetchKeywords = async () => {
+    const selectedSpeed = ref('fast'); // Set default speed to "fast"
 
+    // Define token limits based on speed
+    const tokenLimits = {
+      fast: 50,
+      medium: 100,
+      slow: 200,
+    };
+
+    const fetchKeywords = async () => {
       loading.value = true;
       error.value = '';
 
       try {
-
-        const response = await fetch(`https://keywordio-d7419b16e33c.herokuapp.com/api/related-searches?keyword=${keyword.value}`);
+        const tokens = tokenLimits[selectedSpeed.value]; // Get token limit based on selected speed
+  
+        const response = await fetch(`http://localhost:3001/api/related-searches?keyword=${keyword.value}&speed=${tokens}`);
         if (!response.ok) {
           throw new Error('Failed to fetch keywords');
         }
@@ -69,7 +78,7 @@ export default {
       return [...relatedPhrases.value].sort((a, b) => {
         const modifier = sortOrder.value === 'asc' ? 1 : -1;
         if (sortKey.value === 'volume') {
-          return (Number(a.volume) - Number(b.volume)) * modifier; // Compare as numbers
+          return (Number(a.volume.data[0].vol) - Number(b.volume.data[0].vol)) * modifier; // Compare as numbers
         }
         if (a[sortKey.value] < b[sortKey.value]) return -1 * modifier;
         if (a[sortKey.value] > b[sortKey.value]) return 1 * modifier;
@@ -77,11 +86,17 @@ export default {
       });
     });
 
-    const filteredPhrases = computed(() => {
-      return sortedPhrases.value.filter(phrase => 
-        phrase.keyword.toLowerCase().includes(keyword.value.toLowerCase())
-      );
-    });
+    const copyToClipboard = () => {
+      const keywords = sortedPhrases.value.map(phrase => phrase.keyword).join('\n');
+      navigator.clipboard.writeText(keywords)
+        .then(() => {
+          alert('Keywords copied to clipboard!');
+        })
+        .catch(err => {
+          console.error('Failed to copy: ', err);
+        });
+    };
+    
 
     return {
       keyword,
@@ -91,7 +106,10 @@ export default {
       fetchKeywords,
       getIntentClass,
       sortTable,
-      filteredPhrases,
+      sortedPhrases,
+      copyToClipboard,
+      selectedSpeed
+      
     };
   },
 };
@@ -105,6 +123,11 @@ export default {
       placeholder="Enter a keyword"
       class="border border-gray-300 p-2 rounded w-full mb-2"
     />
+    <select v-model="selectedSpeed" class="border border-gray-300 p-2 rounded mb-2">
+      <option value="fast">Fast (100 tokens)</option>
+      <option value="medium">Medium (300 tokens)</option>
+      <option value="slow">Slow (500 tokens)</option>
+    </select>
     <button
       @click="fetchKeywords"
       class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
@@ -115,12 +138,18 @@ export default {
     <div v-if="error" class="text-red-500 mt-2">{{ error }}</div>
 
 
-    <div v-if="filteredPhrases.length >= 0" class="mt-4">
+    <div v-if="relatedPhrases.length >= 0" class="mt-4">
       <span class="font-semibold">
-        {{ filteredPhrases.length }} result{{ filteredPhrases.length !== 1 ? 's' : '' }} found. <a class="text-blue-500" href="/pro">Unlock more features with Pro</a>
+        {{ relatedPhrases.length }} result{{ relatedPhrases.length !== 1 ? 's' : '' }} found. <a class="text-blue-500" href="/pro">Unlock more features with Pro</a>
       </span>
     </div>
 
+    <button
+      @click="copyToClipboard"
+      class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mt-4"
+    >
+      Copy Keywords to Clipboard
+    </button>
 
     <table v-if="relatedPhrases.length" class="min-w-full mt-4 border border-gray-300">
       <thead>
@@ -131,13 +160,13 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(phrase, index) in filteredPhrases" :key="index" class="border-b">
+        <tr v-for="(phrase, index) in sortedPhrases" :key="index" class="border-b">
           <td class="p-2">{{ phrase.keyword }}</td>
           <td class="p-2">
             <span :class="getIntentClass(phrase.intent) + ' text-white px-2 py-1 rounded'">
               {{ phrase.intent }}
             </span>
-            </td>
+          </td>
           <td class="p-2">{{ phrase.volume.data[0].vol }}</td>
         </tr>
       </tbody>
