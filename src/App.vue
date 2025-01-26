@@ -131,7 +131,7 @@ export default {
       placeholder="Enter a keyword"
       class="border border-gray-300 p-2 rounded w-full mb-2"
     />
-    <select v-model="selectedSpeed" class="border border-gray-300 p-2 rounded mb-2">
+    <select v-model="selectedSpeed" class="border border-gray-300 p-2 rounded mb-2 hidden">
       <option value="fast">Fast (100 tokens)</option>
       <option value="medium">Medium (300 tokens)</option>
       <option value="slow">Slow (500 tokens)</option>
