@@ -69,6 +69,11 @@ export default {
     };
 
 
+    const performSearch = (clickedKeyword) => {
+      keyword.value = clickedKeyword; // Set the input field to the clicked keyword
+      fetchKeywords(clickedKeyword); // Trigger a new search with the clicked keyword
+    };
+
     const sortTable = (key) => {
       sortOrder.value = (sortKey.value === key && sortOrder.value === 'asc') ? 'desc' : 'asc';
       sortKey.value = key;
@@ -107,7 +112,7 @@ export default {
       getIntentClass,
       sortTable,
       sortedPhrases,
-      copyToClipboard,
+      copyToClipboard,performSearch,
       selectedSpeed
       
     };
@@ -164,7 +169,9 @@ export default {
       </thead>
       <tbody>
         <tr v-for="(phrase, index) in sortedPhrases" :key="index" class="border-b">
-          <td class="p-2">{{ phrase.keyword }}</td>
+          <td class="p-2 cursor-pointer text-blue-500 hover:underline" @click="performSearch(phrase.keyword)">
+            {{ phrase.keyword }}
+          </td>
           <td class="p-2">
             <span :class="getIntentClass(phrase.intent) + ' text-white px-2 py-1 rounded'">
               {{ phrase.intent }}
@@ -194,5 +201,14 @@ th {
 }
 th:hover {
   background-color: #f0f0f0;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.text-blue-500 {
+  color: #3b82f6; /* Tailwind blue-500 */
+}
+.hover\:underline:hover {
+  text-decoration: underline;
 }
 </style>
