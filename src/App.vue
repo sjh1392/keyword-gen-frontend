@@ -27,9 +27,10 @@ export default {
         if (!response.ok) {
           throw new Error('Failed to fetch keywords');
         }
+
         const data = await response.json();
-      console.log('Response data:', data);
-      relatedPhrases.value = data.results;
+        console.log('Response data:', data);
+        relatedPhrases.value = data.results;
 
       } catch (err) {
         error.value = err.message;
@@ -112,6 +113,15 @@ export default {
     </button>
     <div v-if="loading" class="mt-2">Loading...</div>
     <div v-if="error" class="text-red-500 mt-2">{{ error }}</div>
+
+
+    <div v-if="filteredPhrases.length >= 0" class="mt-4">
+      <span class="font-semibold">
+        {{ filteredPhrases.length }} result{{ filteredPhrases.length !== 1 ? 's' : '' }} found. <a class="text-blue-500" href="/pro">Unlock more features with Pro</a>
+      </span>
+    </div>
+
+
     <table v-if="relatedPhrases.length" class="min-w-full mt-4 border border-gray-300">
       <thead>
         <tr class="bg-gray-200">
