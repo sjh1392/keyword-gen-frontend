@@ -185,9 +185,9 @@ export default {
     </table>
   
   </div>
-  <footer class="text-center p-10">
+  <footer class="text-center p-10 bg-gray-100 fixed w-[100%] bottom-0">
     <small>
-      Made by <a href="https://diglabs.co.uk" class="text-blue-400">diglabs.co.uk</a> - Tools for marketers
+      Made by <a href="https://diglabs.co.uk" class="font-bold text-blue-400">diglabs.co.uk</a> - Tools for marketers
     </small>
   </footer>
 </template>
