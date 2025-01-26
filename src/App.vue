@@ -117,7 +117,10 @@ export default {
 
 <template>
   <div class="max-w-6xl mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-4">Keyword Generator</h1>
+    <h1 class="text-2xl font-bold mb-4">Keyword Generator
+      <small>v1.0</small>
+    </h1>
+
     <input
       v-model="keyword"
       placeholder="Enter a keyword"
@@ -173,6 +176,11 @@ export default {
     </table>
   
   </div>
+  <footer class="text-center p-10">
+    <small>
+      Made by <a href="https://diglabs.co.uk" class="text-blue-400">diglabs.co.uk</a> - Tools for marketers
+    </small>
+  </footer>
 </template>
 
 <style scoped>
