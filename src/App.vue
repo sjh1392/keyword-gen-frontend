@@ -122,7 +122,9 @@ export default {
 
 <template>
   <div class="max-w-6xl mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-4">Keyword Generator
+    <h1 class="text-2xl font-bold mb-4 py-3">
+      <img src="../src/assets/favicon-32x32.png" class="inline"/>
+      Keyword Generator
       <small>v1.0</small>
     </h1>
 
