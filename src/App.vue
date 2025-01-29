@@ -32,7 +32,7 @@ export default {
       try {
         const tokens = tokenLimits[selectedSpeed.value]; // Get token limit based on selected speed
   
-        const response = await fetch(`http://localhost:3001/api/related-searches?keyword=${keyword.value}&speed=${tokens}`);
+        const response = await fetch(`https://keywordio-d7419b16e33c.herokuapp.com/api/related-searches?keyword=${keyword.value}&speed=${tokens}`);
         if (!response.ok) {
           throw new Error('Failed to fetch keywords');
         }
